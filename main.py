@@ -8,14 +8,14 @@ from telebot.asyncio_handler_backends import State, StatesGroup
 from telebot.asyncio_storage import StateMemoryStorage
 
 # Add your bot token here
-API_TOKEN = "7184475195:AAEIWVRtadEfIcJNIDJN5sOtjEs9GQMBQz4"
+API_TOKEN = "7184475195:AAFY9ZH7StLbfnZi3lfxvJ2EwVy43yShWiA"
 bot = AsyncTeleBot(API_TOKEN)
 
-# configuration
-font_size = 110
-font_color = (255, 255, 255)
+# Configuration
+font_size = 155
+font_color = (200, 200, 200)
 
-# bot state storage and filter setup
+# Bot state storage and filter setup
 state_storage = StateMemoryStorage()
 bot.add_custom_filter(asyncio_filters.StateFilter(bot))
 
@@ -24,7 +24,7 @@ class MyStates(StatesGroup):
     name = State()
 
 
-# start command handler
+# Start command handler
 @bot.message_handler(commands=["start"])
 async def start(message):
     chat_id = message.chat.id
@@ -35,22 +35,26 @@ async def start(message):
 @bot.message_handler(state=MyStates.name)
 async def put_name(message):
     text = message.text
-    print(int(time.time()), text, "\n")
     text = text.replace(" ", "\n")
     fileName = uuid.uuid4()
 
-    im = Image.open("id2.png")
+    # Picking the image needed
+    im = Image.open("design.png")
     draw = ImageDraw.Draw(im)
     unicode_font = ImageFont.truetype("cairo.ttf", font_size)
+
+    # Drawing the text configs
     draw.text(
-        (67, 190),
+        (40, 260),
         text,
         font=unicode_font,
         fill=font_color,
-        stroke_width=5,
-        stroke_fill="#000",
+        stroke_width=0
     )
+    # Saving the image
     im.save(f"gens/{fileName}.png")
+
+    # Sending it to the user
     await bot.send_photo(message.chat.id, open(f"gens/{fileName}.png", "rb"))
 
 
